@@ -1,0 +1,72 @@
+Algorithm mintime(Jobs):
+    Input: List of jobs [(s1, f1), (s2, f2), ..., (sn, fn)]
+    Output: Minimum completion time
+
+    #Sort jobs in decreasing order of f_i
+    Sort Jobs by f_i in descending order
+
+    #Process jobs in sorted order
+    supercomputer_time = 0   # When the supercomputer is free
+    completion_time = 0      # Final completion time
+
+    for each job (s, f) in sorted Jobs:
+        supercomputer_time += s  # Add supercomputer time
+        job_completion = supercomputer_time + f
+        completion_time = max(completion_time, job_completion)
+
+    return completion_time
+
+Algorithm minovertime(m, a, W, p, s):
+    Input: 
+        m = [m1, m2, ..., mn]  # Morning task durations
+        a = [a1, a2, ..., an]  # Afternoon task durations
+        W = max allowed working hours
+        p = regular pay per hour
+        s = overtime pay per hour
+    
+    Output: Minimum overtime cost
+    
+    #Sort morning tasks in ascending order
+    Sort(m)  # Increasing order
+
+    #Sort afternoon tasks in descending order
+    Sort(a, descending=True)  # Decreasing order
+
+    total_overtime_cost = 0
+    
+    #Assign tasks greedily
+    for i = 1 to n:
+        total_hours = m[i] + a[i]  # Combined workload
+        if total_hours > W:
+            overtime = total_hours - W
+            total_overtime_cost += overtime * s  # Compute extra cost
+
+    return total_overtime_cost
+
+Initialize the Flow Network
+Create a directed graph G = (V, E)
+Add a source node (S) and sink node (T)
+
+Add Workers to the Graph
+For each worker i (1 ≤ i ≤ n):
+     Add edge (S → W_i) with capacity **k** (each worker can do at most k tasks)
+
+Add Task Assignments
+   For each worker i:
+     For each task j that worker i is qualified for (j ∈ S_i):
+       Add edge (W_i → T_j) with capacity **1** (a worker can do at most one instance of the task)
+
+Add Task Completion Constraints
+   For each task j (1 ≤ j ≤ m):
+     Add edge (T_j → T) with capacity **w** (each task needs at least w workers)
+
+Compute Maximum Flow
+   Run a Max-Flow algorithm 
+   Let `maxFlow` be the result
+
+Check if Solution Exists
+   If `maxFlow >= m * w`:
+     Return **"Feasible Assignment Exists"**
+   Else:
+     Return **"No Feasible Assignment"**
+
